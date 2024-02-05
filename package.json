@@ -1,6 +1,6 @@
 {
 	"name": "todo-list-api",
-	"module": "index.ts",
+	"module": "src/app.ts",
 	"type": "module",
 	"scripts": {
 		"dev": "bun run --hot src/app.ts",

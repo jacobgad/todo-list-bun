@@ -1,4 +1,4 @@
 node_modules
 sqlite.db
-*.env
+.env*
 .vercel
