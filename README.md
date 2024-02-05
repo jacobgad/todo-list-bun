@@ -1,4 +1,4 @@
-# todo-list-bun
+# todo-list-api
 
 Install dependencies:
 

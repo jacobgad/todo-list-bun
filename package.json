@@ -1,5 +1,5 @@
 {
-	"name": "todo-list-bun",
+	"name": "todo-list-api",
 	"module": "index.ts",
 	"type": "module",
 	"scripts": {
