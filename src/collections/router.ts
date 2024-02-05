@@ -2,7 +2,8 @@ import { createCollectionSchema, updateCollectionSchema } from "./schema";
 import { HTTPException } from "hono/http-exception";
 import { Hono } from "hono";
 import collectionService from "./service";
-import { z } from "zod";
+import { paramIdSchema } from "../utils/validation";
+import { zValidator } from "@hono/zod-validator";
 
 const collectionsRouter = new Hono();
 
@@ -11,34 +12,29 @@ collectionsRouter.get("/", async (context) => {
 	return context.json(collections, 200);
 });
 
-collectionsRouter.post("/", async (context) => {
-	const body = await context.req.json();
-	const data = createCollectionSchema.parse(body);
+collectionsRouter.post("/", zValidator("json", createCollectionSchema), async (context) => {
+	const data = context.req.valid("json");
 	const collection = await collectionService.createCollection(data);
 	return context.json(collection, 200);
 });
 
 collectionsRouter.get("/:id", async (context) => {
-	const params = context.req.param();
-	const id = z.coerce.number().parse(params.id);
+	const { id } = paramIdSchema.parse(context.req.param());
 	const collection = await collectionService.getCollectionById(id);
 	if (!collection) throw new HTTPException(404, { message: "collection not found" });
 	return context.json(collection, 200);
 });
 
-collectionsRouter.put("/:id", async (context) => {
-	const params = context.req.param();
-	const id = z.coerce.number().parse(params.id);
-	const body = await context.req.json();
-	const data = updateCollectionSchema.parse(body);
+collectionsRouter.put("/:id", zValidator("json", updateCollectionSchema), async (context) => {
+	const { id } = paramIdSchema.parse(context.req.param());
+	const data = context.req.valid("json");
 	const collection = await collectionService.updateCollection(id, data);
 	if (!collection) throw new HTTPException(404, { message: "collection not found" });
 	return context.json(collection, 200);
 });
 
 collectionsRouter.delete("/:id", async (context) => {
-	const params = context.req.param();
-	const id = z.coerce.number().parse(params.id);
+	const { id } = paramIdSchema.parse(context.req.param());
 	const collection = await collectionService.deleteCollection(id);
 	if (!collection) throw new HTTPException(404, { message: "collection not found" });
 	return context.json(collection, 200);
