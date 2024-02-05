@@ -1,4 +1,4 @@
-import { z } from 'zod';
+import { z } from "zod";
 
 export type Collection = z.infer<typeof collectionSchema>;
 export type CreateCollection = z.infer<typeof createCollectionSchema>;

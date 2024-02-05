@@ -1,20 +1,20 @@
-import { relations } from 'drizzle-orm';
-import { sqliteTable, text, integer } from 'drizzle-orm/sqlite-core';
+import { integer, sqliteTable, text } from "drizzle-orm/sqlite-core";
+import { relations } from "drizzle-orm";
 
-export const collections = sqliteTable('collections', {
-	id: integer('id').primaryKey(),
-	name: text('name').unique().notNull(),
+export const collections = sqliteTable("collections", {
+	id: integer("id").primaryKey(),
+	name: text("name").unique().notNull(),
 });
 
 export const collectionsRelations = relations(collections, ({ many }) => ({
 	todos: many(todos),
 }));
 
-export const todos = sqliteTable('todos', {
-	id: integer('id').primaryKey(),
-	title: text('title').unique().notNull(),
-	completed: integer('completed', { mode: 'boolean' }).notNull(),
-	collectionId: integer('collection_id')
+export const todos = sqliteTable("todos", {
+	id: integer("id").primaryKey(),
+	title: text("title").unique().notNull(),
+	completed: integer("completed", { mode: "boolean" }).notNull(),
+	collectionId: integer("collection_id")
 		.references(() => collections.id)
 		.notNull(),
 });

@@ -1,4 +1,4 @@
-import { z } from 'zod';
+import { z } from "zod";
 
 export type Todo = z.infer<typeof todoSchema>;
 export type CreateTodo = z.infer<typeof createTodoSchema>;

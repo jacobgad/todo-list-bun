@@ -1,7 +1,7 @@
-import { eq } from 'drizzle-orm';
-import db from '../db';
-import { collections } from '../db/schema';
-import type { Collection, CreateCollection, UpdateCollection } from './schema';
+import type { Collection, CreateCollection, UpdateCollection } from "./schema";
+import { collections } from "../db/schema";
+import db from "../db";
+import { eq } from "drizzle-orm";
 
 async function getCollectionIndex() {
 	const collections = await db.query.collections.findMany({
@@ -10,7 +10,7 @@ async function getCollectionIndex() {
 	return collections;
 }
 
-async function getCollectionById(id: Collection['id']) {
+async function getCollectionById(id: Collection["id"]) {
 	const collection = await db.query.collections.findMany({
 		where: eq(collections.id, id),
 		with: { todos: true },
@@ -24,7 +24,7 @@ async function createCollection(data: CreateCollection) {
 	return collection[0];
 }
 
-async function updateCollection(id: Collection['id'], data: UpdateCollection) {
+async function updateCollection(id: Collection["id"], data: UpdateCollection) {
 	const collection = await db
 		.update(collections)
 		.set(data)
@@ -34,7 +34,7 @@ async function updateCollection(id: Collection['id'], data: UpdateCollection) {
 	return collection[0];
 }
 
-async function deleteCollection(id: Collection['id']) {
+async function deleteCollection(id: Collection["id"]) {
 	const collection = await db.delete(collections).where(eq(collections.id, id)).returning();
 	if (collection.length < 1) return null;
 	return collection[0];
