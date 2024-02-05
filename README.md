@@ -9,17 +9,17 @@ bun install
 Setup database:
 
 ```zsh
-bun db:push
+bun run db:push
 ```
 
 Run in dev mode:
 
 ```bash
-bun dev
+bun run dev
 ```
 
 Run in Production mode:
 
 ```bash
-bun start
+bun run start
 ```
