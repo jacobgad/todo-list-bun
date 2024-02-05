@@ -5,6 +5,6 @@ import env from "../utils/env";
 
 const client = createClient({ url: env.DATABASE_URL, authToken: env.DATABASE_AUTH_TOKEN });
 
-const db = drizzle(client, { schema });
+const db = drizzle(client, { schema, logger: true });
 
 export default db;

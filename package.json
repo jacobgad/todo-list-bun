@@ -3,8 +3,8 @@
 	"module": "index.ts",
 	"type": "module",
 	"scripts": {
-		"dev": "bun run --hot src/index.ts",
-		"start": "bun run src/index.ts",
+		"dev": "bun run --hot src/app.ts",
+		"start": "bun run src/app.ts",
 		"db:push": "drizzle-kit push:sqlite",
 		"db:studio": "npx drizzle-kit studio",
 		"typecheck": "tsc --noEmit",
