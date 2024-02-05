@@ -11,12 +11,11 @@ async function getCollectionIndex() {
 }
 
 async function getCollectionById(id: Collection["id"]) {
-	const collection = await db.query.collections.findMany({
+	const collection = await db.query.collections.findFirst({
 		where: eq(collections.id, id),
 		with: { todos: true },
 	});
-	if (collection.length < 1) return null;
-	return collection[0];
+	return collection;
 }
 
 async function createCollection(data: CreateCollection) {

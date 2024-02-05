@@ -9,9 +9,8 @@ async function getTodoIndex() {
 }
 
 async function getTodoById(id: Todo["id"]) {
-	const todo = await db.query.todos.findMany({ where: eq(todos.id, id) });
-	if (todo.length < 1) return null;
-	return todo[0];
+	const todo = await db.query.todos.findFirst({ where: eq(todos.id, id) });
+	return todo;
 }
 
 async function createTodo(data: CreateTodo) {
