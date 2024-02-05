@@ -7,17 +7,17 @@
 		"start": "bun run src/index.ts",
 		"db:push": "drizzle-kit push:sqlite"
 	},
-	"devDependencies": {
-		"@types/bun": "latest",
-		"better-sqlite3": "^9.3.0",
-		"drizzle-kit": "^0.20.13"
+	"dependencies": {
+		"drizzle-orm": "^0.29.3",
+		"hono": "^3.12.10",
+		"zod": "^3.22.4"
 	},
 	"peerDependencies": {
 		"typescript": "^5.0.0"
 	},
-	"dependencies": {
-		"drizzle-orm": "^0.29.3",
-		"hono": "^3.12.9",
-		"zod": "^3.22.4"
+	"devDependencies": {
+		"@types/bun": "latest",
+		"better-sqlite3": "^9.4.0",
+		"drizzle-kit": "^0.20.14"
 	}
 }
