@@ -1,8 +1,8 @@
 import { createTodoSchema, updateTodoSchema } from "./schema";
 import { HTTPException } from "hono/http-exception";
 import { Hono } from "hono";
-import { paramIdSchema } from "../utils/validation";
 import todoService from "./service";
+import { validateParamId } from "../utils/validation";
 import { zValidator } from "@hono/zod-validator";
 
 const todosRouter = new Hono();
@@ -19,14 +19,14 @@ todosRouter.post("/", zValidator("json", createTodoSchema), async (context) => {
 });
 
 todosRouter.get("/:id", async (context) => {
-	const { id } = paramIdSchema.parse(context.req.param());
+	const { id } = validateParamId(context.req.param());
 	const todo = await todoService.getTodoById(id);
 	if (!todo) throw new HTTPException(404, { message: "Todo does not exist" });
 	return context.json(todo, 200);
 });
 
 todosRouter.put("/:id", zValidator("json", updateTodoSchema), async (context) => {
-	const { id } = paramIdSchema.parse(context.req.param());
+	const { id } = validateParamId(context.req.param());
 	const data = context.req.valid("json");
 	const todo = await todoService.updateTodo(id, data);
 	if (!todo) throw new HTTPException(404, { message: "Todo does not exist" });
@@ -34,7 +34,7 @@ todosRouter.put("/:id", zValidator("json", updateTodoSchema), async (context) =>
 });
 
 todosRouter.delete("/:id", async (context) => {
-	const { id } = paramIdSchema.parse(context.req.param());
+	const { id } = validateParamId(context.req.param());
 	const todo = await todoService.deleteTodo(id);
 	if (!todo) throw new HTTPException(404, { message: "Todo does not exist" });
 	return context.json(todo, 200);
