@@ -3,7 +3,7 @@ import collectionsRouter from "./collections/router";
 import { logger } from "hono/logger";
 import todosRouter from "./todos/router";
 
-const app = new Hono();
+const app = new Hono().basePath("/api");
 
 app.use("*", logger());
 
