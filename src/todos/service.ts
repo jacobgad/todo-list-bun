@@ -9,25 +9,27 @@ async function getTodoIndex() {
 }
 
 async function getTodoById(id: Todo["id"]) {
-	const todo = await db.query.todos.findFirst({ where: eq(todos.id, id) });
+	const response = await db.query.todos.findFirst({ where: eq(todos.id, id) });
+	const todo = response ?? null;
 	return todo;
 }
 
 async function createTodo(data: CreateTodo) {
-	const todo = await db.insert(todos).values(data).returning();
-	return todo[0];
+	const response = await db.insert(todos).values(data).returning();
+	const todo = response.at(0) ?? null;
+	return todo;
 }
 
 async function updateTodo(id: Todo["id"], data: UpdateTodo) {
-	const todo = await db.update(todos).set(data).where(eq(todos.id, id)).returning();
-	if (todo.length < 1) return null;
-	return todo[0];
+	const response = await db.update(todos).set(data).where(eq(todos.id, id)).returning();
+	const todo = response.at(0) ?? null;
+	return todo;
 }
 
 async function deleteTodo(id: Todo["id"]) {
-	const todo = await db.delete(todos).where(eq(todos.id, id)).returning();
-	if (todo.length < 1) return null;
-	return todo[0];
+	const response = await db.delete(todos).where(eq(todos.id, id)).returning();
+	const todo = response.at(0) ?? null;
+	return todo;
 }
 
 const todoService = {

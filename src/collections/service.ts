@@ -11,32 +11,30 @@ async function getCollectionIndex() {
 }
 
 async function getCollectionById(id: Collection["id"]) {
-	const collection = await db.query.collections.findFirst({
+	const response = await db.query.collections.findFirst({
 		where: eq(collections.id, id),
 		with: { todos: true },
 	});
+	const collection = response ?? null;
 	return collection;
 }
 
 async function createCollection(data: CreateCollection) {
-	const collection = await db.insert(collections).values(data).returning();
-	return collection[0];
+	const response = await db.insert(collections).values(data).returning();
+	const collection = response.at(0) ?? null;
+	return collection;
 }
 
 async function updateCollection(id: Collection["id"], data: UpdateCollection) {
-	const collection = await db
-		.update(collections)
-		.set(data)
-		.where(eq(collections.id, id))
-		.returning();
-	if (collection.length < 1) return null;
-	return collection[0];
+	const response = await db.update(collections).set(data).where(eq(collections.id, id)).returning();
+	const collection = response.at(0) ?? null;
+	return collection;
 }
 
 async function deleteCollection(id: Collection["id"]) {
-	const collection = await db.delete(collections).where(eq(collections.id, id)).returning();
-	if (collection.length < 1) return null;
-	return collection[0];
+	const response = await db.delete(collections).where(eq(collections.id, id)).returning();
+	const collection = response.at(0) ?? null;
+	return collection;
 }
 
 const collectionService = {
