@@ -1,26 +1,42 @@
-import { integer, sqliteTable, text } from "drizzle-orm/sqlite-core";
+import { integer, sqliteTable, text, unique } from "drizzle-orm/sqlite-core";
 import { randomBytes } from "node:crypto";
 import { relations } from "drizzle-orm";
 
 // Collections
-export const collections = sqliteTable("collections", {
-	id: integer("id").primaryKey(),
-	name: text("name").unique().notNull(),
-});
+export const collections = sqliteTable(
+	"collections",
+	{
+		id: integer("id").primaryKey(),
+		name: text("name").unique().notNull(),
+		userId: integer("user_id")
+			.references(() => users.id)
+			.notNull(),
+	},
+	(table) => ({
+		unique: unique().on(table.userId, table.name),
+	}),
+);
 
-export const collectionsRelations = relations(collections, ({ many }) => ({
+export const collectionsRelations = relations(collections, ({ many, one }) => ({
 	todos: many(todos),
+	user: one(users),
 }));
 
 // Todos
-export const todos = sqliteTable("todos", {
-	id: integer("id").primaryKey(),
-	title: text("title").unique().notNull(),
-	completed: integer("completed", { mode: "boolean" }).notNull(),
-	collectionId: integer("collection_id")
-		.references(() => collections.id)
-		.notNull(),
-});
+export const todos = sqliteTable(
+	"todos",
+	{
+		id: integer("id").primaryKey(),
+		title: text("title").unique().notNull(),
+		completed: integer("completed", { mode: "boolean" }).notNull(),
+		collectionId: integer("collection_id")
+			.references(() => collections.id)
+			.notNull(),
+	},
+	(table) => ({
+		unique: unique().on(table.collectionId, table.title),
+	}),
+);
 
 export const todosRelations = relations(todos, ({ one }) => ({
 	collection: one(collections, {
@@ -36,6 +52,10 @@ export const users = sqliteTable("users", {
 	passwordHash: text("password_hash").notNull(),
 	passwordSalt: text("password_salt").notNull(),
 });
+
+export const usersRelations = relations(users, ({ many }) => ({
+	collections: many(collections),
+}));
 
 // Sessions
 export const sessions = sqliteTable("sessions", {

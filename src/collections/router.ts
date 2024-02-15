@@ -1,3 +1,4 @@
+import { type Variables, isAuthed } from "../sessions/middleware";
 import { createCollectionSchema, updateCollectionSchema } from "./schema";
 import { HTTPException } from "hono/http-exception";
 import { Hono } from "hono";
@@ -5,18 +6,24 @@ import collectionService from "./service";
 import { paramIdSchema } from "../utils/validation";
 import { zValidator } from "@hono/zod-validator";
 
-const collectionsRouter = new Hono();
+const collectionsRouter = new Hono<{ Variables: Variables }>();
+collectionsRouter.use(isAuthed);
 
 collectionsRouter.get("/", async (context) => {
 	const collections = await collectionService.getCollectionIndex();
 	return context.json(collections, 200);
 });
 
-collectionsRouter.post("/", zValidator("json", createCollectionSchema), async (context) => {
-	const data = context.req.valid("json");
-	const collection = await collectionService.createCollection(data);
-	return context.json(collection, 200);
-});
+collectionsRouter.post(
+	"/",
+	zValidator("json", createCollectionSchema.omit({ userId: true })),
+	async (context) => {
+		const userId = context.get("userId");
+		const data = context.req.valid("json");
+		const collection = await collectionService.createCollection({ ...data, userId });
+		return context.json(collection, 200);
+	},
+);
 
 collectionsRouter.get("/:id", zValidator("param", paramIdSchema), async (context) => {
 	const { id } = context.req.valid("param");

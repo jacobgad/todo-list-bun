@@ -1,14 +1,14 @@
 import { createTodoSchema, updateTodoSchema } from "./schema";
 import { HTTPException } from "hono/http-exception";
 import { Hono } from "hono";
-import { isLoggedIn } from "../sessions/middleware";
+import { isAuthed } from "../sessions/middleware";
 import { paramIdSchema } from "../utils/validation";
 import todoService from "./service";
 import { zValidator } from "@hono/zod-validator";
 
 const todosRouter = new Hono();
 
-todosRouter.use(isLoggedIn);
+todosRouter.use(isAuthed);
 
 todosRouter.get("/", async (context) => {
 	const todos = await todoService.getTodoIndex();
