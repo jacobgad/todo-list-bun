@@ -1,4 +1,5 @@
 import { integer, sqliteTable, text } from "drizzle-orm/sqlite-core";
+import { randomBytes } from "node:crypto";
 import { relations } from "drizzle-orm";
 
 // Collections
@@ -34,4 +35,14 @@ export const users = sqliteTable("users", {
 	email: text("email").unique().notNull(),
 	passwordHash: text("password_hash").notNull(),
 	passwordSalt: text("password_salt").notNull(),
+});
+
+// Sessions
+export const sessions = sqliteTable("sessions", {
+	id: text("id")
+		.primaryKey()
+		.$defaultFn(() => randomBytes(30).toString("hex")),
+	userId: integer("user_id")
+		.references(() => users.id)
+		.notNull(),
 });

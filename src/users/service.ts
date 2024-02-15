@@ -4,6 +4,13 @@ import db from "../db";
 import { eq } from "drizzle-orm";
 import { users } from "../db/schema";
 
+/** Internal use only: Hash and salt included */
+async function getUserByEmail(email: string) {
+	const response = await db.select().from(users).where(eq(users.email, email));
+	const user = response.at(0) ?? null;
+	return user;
+}
+
 async function createUser(data: CreateUser) {
 	const { passwordHash, passwordSalt } = await createPasswordHash(data.password);
 	const response = await db
@@ -34,6 +41,7 @@ async function deleteUser(id: User["id"]) {
 }
 
 const userService = {
+	getUserByEmail,
 	createUser,
 	updateUser,
 	deleteUser,
