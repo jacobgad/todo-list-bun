@@ -1,13 +1,12 @@
 import { deleteCookie, getSignedCookie, setSignedCookie } from "hono/cookie";
 import { HTTPException } from "hono/http-exception";
 import { Hono } from "hono";
+import { SESSION_COOKIE_NAME } from "./utils";
 import { createUserSchema } from "../users/schema";
 import env from "../utils/env";
 import sessionService from "./service";
 import userService from "../users/service";
 import { zValidator } from "@hono/zod-validator";
-
-const SESSION_COOKIE_NAME = "session";
 
 const sessionsRouter = new Hono();
 

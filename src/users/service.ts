@@ -6,8 +6,17 @@ import { users } from "../db/schema";
 
 /** Internal use only: Hash and salt included */
 async function getUserByEmail(email: string) {
-	const response = await db.select().from(users).where(eq(users.email, email));
-	const user = response.at(0) ?? null;
+	const response = await db.query.users.findFirst({ where: eq(users.email, email) });
+	const user = response ?? null;
+	return user;
+}
+
+async function getUserById(id: User["id"]) {
+	const response = await db.query.users.findFirst({
+		where: eq(users.id, id),
+		columns: { passwordHash: false, passwordSalt: false },
+	});
+	const user = response ?? null;
 	return user;
 }
 
@@ -42,6 +51,7 @@ async function deleteUser(id: User["id"]) {
 
 const userService = {
 	getUserByEmail,
+	getUserById,
 	createUser,
 	updateUser,
 	deleteUser,
