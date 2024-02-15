@@ -7,7 +7,7 @@
 		"start": "bun run src/app.ts",
 		"db:push": "drizzle-kit push:sqlite",
 		"db:studio": "drizzle-kit studio",
-		"typecheck": "tsc --noEmit",
+		"type:check": "tsc --noEmit",
 		"format:check": "prettier --check \"**/*.{js,ts,json,md}\"",
 		"format:fix": "prettier --write \"**/*.{js,ts,json,md}\"",
 		"lint": "eslint src --ext js,ts --report-unused-disable-directives --max-warnings 0"
