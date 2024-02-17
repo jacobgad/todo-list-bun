@@ -1,6 +1,6 @@
 import type { Collection, CreateCollection, UpdateCollection } from "./schema";
 import { and, eq } from "drizzle-orm";
-import { User } from "../users/schema";
+import type { User } from "../users/schema";
 import { collections } from "../db/schema";
 import db from "../db";
 

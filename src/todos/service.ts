@@ -1,7 +1,7 @@
 import type { CreateTodo, Todo, UpdateTodo } from "./schema";
 import { and, eq, inArray } from "drizzle-orm";
 import { collections, todos } from "../db/schema";
-import { User } from "../users/schema";
+import type { User } from "../users/schema";
 import db from "../db";
 
 const userCollectionIds = (userId: User["id"]) =>

@@ -12,6 +12,7 @@
 	"plugins": ["@typescript-eslint"],
 	"rules": {
 		"no-console": "warn",
-		"sort-imports": "warn"
+		"sort-imports": "warn",
+		"@typescript-eslint/consistent-type-imports": "warn"
 	}
 }

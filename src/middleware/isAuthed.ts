@@ -1,7 +1,7 @@
 import { HTTPException } from "hono/http-exception";
 import { Hono } from "hono";
 import { SESSION_COOKIE_NAME } from "../sessions/utils";
-import { User } from "../users/schema";
+import type { User } from "../users/schema";
 import { createFactory } from "hono/factory";
 import env from "../utils/env";
 import { getSignedCookie } from "hono/cookie";

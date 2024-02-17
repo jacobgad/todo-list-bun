@@ -7,7 +7,7 @@ export const collections = sqliteTable(
 	"collections",
 	{
 		id: integer("id").primaryKey(),
-		name: text("name").unique().notNull(),
+		name: text("name").notNull(),
 		userId: integer("user_id")
 			.references(() => users.id)
 			.notNull(),
@@ -27,7 +27,7 @@ export const todos = sqliteTable(
 	"todos",
 	{
 		id: integer("id").primaryKey(),
-		title: text("title").unique().notNull(),
+		title: text("title").notNull(),
 		completed: integer("completed", { mode: "boolean" }).notNull(),
 		collectionId: integer("collection_id")
 			.references(() => collections.id)
