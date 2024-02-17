@@ -7,11 +7,13 @@ import env from "../utils/env";
 import { getSignedCookie } from "hono/cookie";
 import sessionService from "../sessions/service";
 
-export type IsAuthedVariables = {
-	userId: User["id"];
+type IsAuthedEnv = {
+	Variables: {
+		userId: User["id"];
+	};
 };
 
-const factory = createFactory();
+const factory = createFactory<IsAuthedEnv>();
 
 export const isAuthedMiddleware = factory.createMiddleware(async (context, next) => {
 	const sessionId = await getSignedCookie(context, env.SESSION_SECRET, SESSION_COOKIE_NAME);
@@ -23,5 +25,5 @@ export const isAuthedMiddleware = factory.createMiddleware(async (context, next)
 });
 
 export function newIsAuthedRouter() {
-	return new Hono<{ Variables: IsAuthedVariables }>().use(isAuthedMiddleware);
+	return new Hono().use(isAuthedMiddleware);
 }
