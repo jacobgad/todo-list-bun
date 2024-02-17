@@ -1,16 +1,15 @@
-import { type Variables, isAuthed } from "../sessions/middleware";
 import { createCollectionSchema, updateCollectionSchema } from "./schema";
 import { HTTPException } from "hono/http-exception";
-import { Hono } from "hono";
 import collectionService from "./service";
+import { newIsAuthedRouter } from "../middleware/isAuthed";
 import { paramIdSchema } from "../utils/validation";
 import { zValidator } from "@hono/zod-validator";
 
-const collectionsRouter = new Hono<{ Variables: Variables }>();
-collectionsRouter.use(isAuthed);
+const collectionsRouter = newIsAuthedRouter();
 
 collectionsRouter.get("/", async (context) => {
-	const collections = await collectionService.getCollectionIndex();
+	const { userId } = context.var;
+	const collections = await collectionService.getCollectionIndex({ userId });
 	return context.json(collections, 200);
 });
 
@@ -20,14 +19,15 @@ collectionsRouter.post(
 	async (context) => {
 		const userId = context.get("userId");
 		const data = context.req.valid("json");
-		const collection = await collectionService.createCollection({ ...data, userId });
+		const collection = await collectionService.createCollection({ data: { ...data, userId } });
 		return context.json(collection, 200);
 	},
 );
 
 collectionsRouter.get("/:id", zValidator("param", paramIdSchema), async (context) => {
 	const { id } = context.req.valid("param");
-	const collection = await collectionService.getCollectionById(id);
+	const userId = context.get("userId");
+	const collection = await collectionService.getCollectionById({ id, userId });
 	if (!collection) throw new HTTPException(404, { message: "collection not found" });
 	return context.json(collection, 200);
 });
@@ -39,7 +39,8 @@ collectionsRouter.put(
 	async (context) => {
 		const { id } = context.req.valid("param");
 		const data = context.req.valid("json");
-		const collection = await collectionService.updateCollection(id, data);
+		const userId = context.get("userId");
+		const collection = await collectionService.updateCollection({ id, userId, data });
 		if (!collection) throw new HTTPException(404, { message: "collection not found" });
 		return context.json(collection, 200);
 	},
@@ -47,7 +48,8 @@ collectionsRouter.put(
 
 collectionsRouter.delete("/:id", zValidator("param", paramIdSchema), async (context) => {
 	const { id } = context.req.valid("param");
-	const collection = await collectionService.deleteCollection(id);
+	const userId = context.get("userId");
+	const collection = await collectionService.deleteCollection({ id, userId });
 	if (!collection) throw new HTTPException(404, { message: "collection not found" });
 	return context.json(collection, 200);
 });

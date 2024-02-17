@@ -1,38 +1,55 @@
 import type { Collection, CreateCollection, UpdateCollection } from "./schema";
+import { and, eq } from "drizzle-orm";
+import { User } from "../users/schema";
 import { collections } from "../db/schema";
 import db from "../db";
-import { eq } from "drizzle-orm";
 
-async function getCollectionIndex() {
-	const collections = await db.query.collections.findMany({
+async function getCollectionIndex({ userId }: { userId: User["id"] }) {
+	const response = await db.query.collections.findMany({
 		with: { todos: true },
+		where: eq(collections.userId, userId),
 	});
-	return collections;
+	return response;
 }
 
-async function getCollectionById(id: Collection["id"]) {
+async function getCollectionById({ id, userId }: { id: Collection["id"]; userId: User["id"] }) {
 	const response = await db.query.collections.findFirst({
-		where: eq(collections.id, id),
+		where: and(eq(collections.id, id), eq(collections.userId, userId)),
 		with: { todos: true },
 	});
 	const collection = response ?? null;
 	return collection;
 }
 
-async function createCollection(data: CreateCollection) {
+async function createCollection({ data }: { data: CreateCollection }) {
 	const response = await db.insert(collections).values(data).returning();
 	const collection = response.at(0) ?? null;
 	return collection;
 }
 
-async function updateCollection(id: Collection["id"], data: UpdateCollection) {
-	const response = await db.update(collections).set(data).where(eq(collections.id, id)).returning();
+async function updateCollection({
+	id,
+	userId,
+	data,
+}: {
+	id: Collection["id"];
+	userId: User["id"];
+	data: UpdateCollection;
+}) {
+	const response = await db
+		.update(collections)
+		.set(data)
+		.where(and(eq(collections.id, id), eq(collections.userId, userId)))
+		.returning();
 	const collection = response.at(0) ?? null;
 	return collection;
 }
 
-async function deleteCollection(id: Collection["id"]) {
-	const response = await db.delete(collections).where(eq(collections.id, id)).returning();
+async function deleteCollection({ id, userId }: { id: Collection["id"]; userId: User["id"] }) {
+	const response = await db
+		.delete(collections)
+		.where(and(eq(collections.id, id), eq(collections.userId, userId)))
+		.returning();
 	const collection = response.at(0) ?? null;
 	return collection;
 }

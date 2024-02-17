@@ -1,30 +1,33 @@
 import { createTodoSchema, updateTodoSchema } from "./schema";
 import { HTTPException } from "hono/http-exception";
-import { Hono } from "hono";
-import { isAuthed } from "../sessions/middleware";
+import collectionService from "../collections/service";
+import { newIsAuthedRouter } from "../middleware/isAuthed";
 import { paramIdSchema } from "../utils/validation";
 import todoService from "./service";
 import { zValidator } from "@hono/zod-validator";
 
-const todosRouter = new Hono();
-
-todosRouter.use(isAuthed);
+const todosRouter = newIsAuthedRouter();
 
 todosRouter.get("/", async (context) => {
-	const todos = await todoService.getTodoIndex();
+	const { userId } = context.var;
+	const todos = await todoService.getTodoIndex({ userId });
 	return context.json(todos, 200);
 });
 
 todosRouter.post("/", zValidator("json", createTodoSchema), async (context) => {
 	const data = context.req.valid("json");
+	const { userId } = context.var;
+	const collection = await collectionService.getCollectionById({ id: data.collectionId, userId });
+	if (!collection) throw new HTTPException(404, { message: "collection not found" });
 	const todo = await todoService.createTodo(data);
 	return context.json(todo, 200);
 });
 
 todosRouter.get("/:id", zValidator("param", paramIdSchema), async (context) => {
 	const { id } = context.req.valid("param");
-	const todo = await todoService.getTodoById(id);
-	if (!todo) throw new HTTPException(404, { message: "Todo does not exist" });
+	const { userId } = context.var;
+	const todo = await todoService.getTodoById({ id, userId });
+	if (!todo) throw new HTTPException(404, { message: "todo not found" });
 	return context.json(todo, 200);
 });
 
@@ -34,17 +37,19 @@ todosRouter.put(
 	zValidator("json", updateTodoSchema),
 	async (context) => {
 		const { id } = context.req.valid("param");
+		const { userId } = context.var;
 		const data = context.req.valid("json");
-		const todo = await todoService.updateTodo(id, data);
-		if (!todo) throw new HTTPException(404, { message: "Todo does not exist" });
+		const todo = await todoService.updateTodo({ id, userId, data });
+		if (!todo) throw new HTTPException(404, { message: "todo not found" });
 		return context.json(todo, 200);
 	},
 );
 
 todosRouter.delete("/:id", zValidator("param", paramIdSchema), async (context) => {
 	const { id } = context.req.valid("param");
-	const todo = await todoService.deleteTodo(id);
-	if (!todo) throw new HTTPException(404, { message: "Todo does not exist" });
+	const { userId } = context.var;
+	const todo = await todoService.deleteTodo({ id, userId });
+	if (!todo) throw new HTTPException(404, { message: "todo not found" });
 	return context.json(todo, 200);
 });
 
