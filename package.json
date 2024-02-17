@@ -7,14 +7,15 @@
 		"start": "bun run src/app.ts",
 		"db:push": "drizzle-kit push:sqlite",
 		"db:studio": "drizzle-kit studio",
-		"type:check": "tsc --noEmit",
+		"types:check": "tsc --noEmit",
 		"format:check": "prettier --check \"**/*.{js,ts,json,md}\"",
 		"format:fix": "prettier --write \"**/*.{js,ts,json,md}\"",
-		"lint": "eslint src --ext js,ts --report-unused-disable-directives --max-warnings 0"
+		"lint:check": "eslint src --ext js,ts --report-unused-disable-directives --max-warnings 0"
 	},
 	"dependencies": {
 		"@hono/zod-validator": "^0.1.11",
 		"@libsql/client": "^0.4.3",
+		"date-fns": "^3.3.1",
 		"drizzle-orm": "^0.29.3",
 		"hono": "^4.0.2",
 		"zod": "^3.22.4"

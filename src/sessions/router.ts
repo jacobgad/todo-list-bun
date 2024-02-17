@@ -1,6 +1,7 @@
 import { deleteCookie, getSignedCookie, setSignedCookie } from "hono/cookie";
 import { HTTPException } from "hono/http-exception";
 import { SESSION_COOKIE_NAME } from "./utils";
+import { add } from "date-fns";
 import { createUserSchema } from "../users/schema";
 import env from "../utils/env";
 import { newPublicRouter } from "../middleware/public";
@@ -16,9 +17,14 @@ sessionsRouter.post("/", zValidator("json", createUserSchema), async (context) =
 	if (!user) throw new HTTPException(401, { message: "Email or password incorrect" });
 	const isAuthed = await Bun.password.verify(data.password + user.passwordSalt, user.passwordHash);
 	if (!isAuthed) throw new HTTPException(401, { message: "Email or password incorrect" });
-	const session = await sessionService.createSession({ userId: user.id });
+	const expiresAt = add(new Date(), { months: 1 });
+	const session = await sessionService.createSession({ userId: user.id, expiresAt });
 	if (!session) throw new HTTPException(400, { message: "Error creating session" });
-	await setSignedCookie(context, SESSION_COOKIE_NAME, session.id, env.SESSION_SECRET);
+	await setSignedCookie(context, SESSION_COOKIE_NAME, session.id, env.SESSION_SECRET, {
+		httpOnly: true,
+		expires: expiresAt,
+		secure: env.NODE_ENV === "development" ? false : true,
+	});
 	return context.text("session created", 200);
 });
 

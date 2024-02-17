@@ -1,7 +1,8 @@
 import { z } from "zod";
 
 const envSchema = z.object({
-	DATABASE_URL: z.string(),
+	NODE_ENV: z.enum(["development", "production"]).default("development"),
+	DATABASE_URL: z.string().default("file:sqlite.db"),
 	DATABASE_AUTH_TOKEN: z.string().optional(),
 	SESSION_SECRET: z.string().min(20),
 });

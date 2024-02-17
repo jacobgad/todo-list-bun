@@ -1,10 +1,12 @@
 import type { CreateSession, Session } from "./schema";
+import { and, eq, gt } from "drizzle-orm";
 import db from "../db";
-import { eq } from "drizzle-orm";
 import { sessions } from "../db/schema";
 
 async function getSessionById(id: Session["id"]) {
-	const response = await db.query.sessions.findFirst({ where: eq(sessions.id, id) });
+	const response = await db.query.sessions.findFirst({
+		where: and(eq(sessions.id, id), gt(sessions.expiresAt, new Date())),
+	});
 	const session = response ?? null;
 	return session;
 }
