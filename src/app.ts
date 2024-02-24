@@ -5,17 +5,18 @@ import sessionsRouter from "./sessions/router";
 import todosRouter from "./todos/router";
 import usersRouter from "./users/router";
 
-const app = new Hono().basePath("/api");
+const app = new Hono()
 
-app.use("*", logger());
+	.use("*", logger())
 
-app.route("/collections", collectionsRouter);
-app.route("/todos", todosRouter);
-app.route("/sessions", sessionsRouter);
-app.route("/users", usersRouter);
+	.route("/collections", collectionsRouter)
+	.route("/todos", todosRouter)
+	.route("/sessions", sessionsRouter)
+	.route("/users", usersRouter)
 
-app.get("/", (context) => {
-	return context.text("Todos API");
-});
+	.get("/", (context) => {
+		return context.text("Todos API");
+	});
 
 export default app;
+export type TodosApi = typeof app;
