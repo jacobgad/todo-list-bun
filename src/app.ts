@@ -5,7 +5,7 @@ import sessionsRouter from "./sessions/router";
 import todosRouter from "./todos/router";
 import usersRouter from "./users/router";
 
-const app = new Hono()
+const app = new Hono().basePath('/api')
 
 	.use("*", logger())
 

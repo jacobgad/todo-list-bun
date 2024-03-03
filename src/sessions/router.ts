@@ -4,12 +4,18 @@ import { SESSION_COOKIE_NAME } from "./utils";
 import { add } from "date-fns";
 import { createUserSchema } from "../users/schema";
 import env from "../utils/env";
+import { isAuthedMiddleware } from "../middleware/isAuthed";
 import { newPublicRouter } from "../middleware/public";
 import sessionService from "./service";
 import userService from "../users/service";
 import { zValidator } from "@hono/zod-validator";
 
 const sessionsRouter = newPublicRouter()
+	.get('/', isAuthedMiddleware, (context) => {
+		const userId = context.get('userId')
+		return context.text(String(userId), 200)
+	})
+
 	.post("/", zValidator("json", createUserSchema), async (context) => {
 		const data = context.req.valid("json");
 		const user = await userService.getUserByEmail(data.email);
