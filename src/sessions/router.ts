@@ -11,9 +11,9 @@ import userService from "../users/service";
 import { zValidator } from "@hono/zod-validator";
 
 const sessionsRouter = newPublicRouter()
-	.get('/', isAuthedMiddleware, (context) => {
-		const userId = context.get('userId')
-		return context.text(String(userId), 200)
+	.get("/", isAuthedMiddleware, (context) => {
+		const userId = context.get("userId");
+		return context.text(String(userId), 200);
 	})
 
 	.post("/", zValidator("json", createUserSchema), async (context) => {

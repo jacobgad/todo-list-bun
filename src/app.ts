@@ -5,7 +5,8 @@ import sessionsRouter from "./sessions/router";
 import todosRouter from "./todos/router";
 import usersRouter from "./users/router";
 
-const app = new Hono().basePath('/api')
+const app = new Hono()
+	.basePath("/api")
 
 	.use("*", logger())
 
@@ -19,4 +20,3 @@ const app = new Hono().basePath('/api')
 	});
 
 export default app;
-export type TodosApi = typeof app;
