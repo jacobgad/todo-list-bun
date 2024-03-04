@@ -1,4 +1,4 @@
-import { Scrypt } from "oslo/password";
+import { Scrypt } from "lucia";
 
 export async function createPasswordHash(password: string) {
 	const scrypt = new Scrypt();
