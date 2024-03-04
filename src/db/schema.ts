@@ -1,5 +1,5 @@
+import { generateSessionId, getSessionExpiry } from "./utils";
 import { integer, sqliteTable, text, unique } from "drizzle-orm/sqlite-core";
-import { randomBytes } from "node:crypto";
 import { relations } from "drizzle-orm";
 
 // Collections
@@ -50,7 +50,6 @@ export const users = sqliteTable("users", {
 	id: integer("id").primaryKey(),
 	email: text("email").unique().notNull(),
 	passwordHash: text("password_hash").notNull(),
-	passwordSalt: text("password_salt").notNull(),
 });
 
 export const usersRelations = relations(users, ({ many }) => ({
@@ -59,11 +58,9 @@ export const usersRelations = relations(users, ({ many }) => ({
 
 // Sessions
 export const sessions = sqliteTable("sessions", {
-	id: text("id")
-		.primaryKey()
-		.$defaultFn(() => randomBytes(30).toString("hex")),
+	id: text("id").primaryKey().$defaultFn(generateSessionId),
 	userId: integer("user_id")
 		.references(() => users.id)
 		.notNull(),
-	expiresAt: integer("expires_at", { mode: "timestamp" }).notNull(),
+	expiresAt: integer("expires_at", { mode: "timestamp" }).notNull().$default(getSessionExpiry),
 });

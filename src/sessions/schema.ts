@@ -9,4 +9,4 @@ export const sessionSchema = z.object({
 	expiresAt: z.date(),
 });
 
-export const createSessionSchema = sessionSchema.omit({ id: true });
+export const createSessionSchema = sessionSchema.omit({ id: true, expiresAt: true });

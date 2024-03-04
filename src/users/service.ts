@@ -14,29 +14,27 @@ async function getUserByEmail(email: string) {
 async function getUserById(id: User["id"]) {
 	const response = await db.query.users.findFirst({
 		where: eq(users.id, id),
-		columns: { passwordHash: false, passwordSalt: false },
+		columns: { passwordHash: false },
 	});
 	const user = response ?? null;
 	return user;
 }
 
 async function createUser(data: CreateUser) {
-	const { passwordHash, passwordSalt } = await createPasswordHash(data.password);
+	const passwordHash = await createPasswordHash(data.password);
 	const response = await db
 		.insert(users)
-		.values({ email: data.email, passwordHash, passwordSalt })
+		.values({ email: data.email, passwordHash })
 		.returning({ id: users.id, email: users.email });
 	const user = response.at(0) ?? null;
 	return user;
 }
 
 async function updateUser(id: User["id"], data: UpdateUser) {
-	const { passwordHash, passwordSalt } = data.password
-		? await createPasswordHash(data.password)
-		: { passwordHash: undefined, passwordSalt: undefined };
+	const passwordHash = data.password ? await createPasswordHash(data.password) : undefined;
 	const response = await db
 		.update(users)
-		.set({ email: data.email, passwordHash, passwordSalt })
+		.set({ email: data.email, passwordHash })
 		.where(eq(users.id, id))
 		.returning();
 	const user = response.at(0) ?? null;
