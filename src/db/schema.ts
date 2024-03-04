@@ -19,7 +19,10 @@ export const collections = sqliteTable(
 
 export const collectionsRelations = relations(collections, ({ many, one }) => ({
 	todos: many(todos),
-	user: one(users),
+	user: one(users, {
+		fields: [collections.userId], 
+		references: [users.id]
+	}),
 }));
 
 // Todos
