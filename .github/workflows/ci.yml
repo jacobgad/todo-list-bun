@@ -11,16 +11,15 @@ jobs:
 
     steps:
       - uses: actions/checkout@v4
-      - uses: oven-sh/setup-bun@v1
 
       - name: Install dependencies
-        run: bun install
+        run: npm install
 
       - name: Typecheck
-        run: bun run types:check
+        run: npm run types:check
 
       - name: lint
-        run: bun run lint:check
+        run: npm run lint:check
 
       - name: format
-        run: bun run format:check
+        run: npm run format:check
