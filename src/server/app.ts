@@ -8,19 +8,19 @@ import todosRouter from "./todos/router";
 import usersRouter from "./users/router";
 
 const app = new Hono()
-	.basePath("/api")
+  .basePath("/api")
 
-	.use(logger())
-	.use(secureHeaders())
-	.use(cors({ origin: "*", credentials: true }))
+  .use(logger())
+  .use(secureHeaders())
+  .use(cors({ origin: "*", credentials: true }))
 
-	.route("/collections", collectionsRouter)
-	.route("/todos", todosRouter)
-	.route("/sessions", sessionsRouter)
-	.route("/users", usersRouter)
+  .route("/collections", collectionsRouter)
+  .route("/todos", todosRouter)
+  .route("/sessions", sessionsRouter)
+  .route("/users", usersRouter)
 
-	.get("/", (context) => {
-		return context.text("Todos API");
-	});
+  .get("/", (context) => {
+    return context.text("Todos API");
+  });
 
 export default app;

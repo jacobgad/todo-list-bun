@@ -5,10 +5,10 @@ export type CreateTodo = z.infer<typeof createTodoSchema>;
 export type UpdateTodo = z.infer<typeof updateTodoSchema>;
 
 export const todoSchema = z.object({
-	id: z.number(),
-	title: z.string().min(1),
-	completed: z.boolean().default(false),
-	collectionId: z.number(),
+  id: z.number(),
+  title: z.string().min(1),
+  completed: z.boolean().default(false),
+  collectionId: z.number(),
 });
 
 export const createTodoSchema = todoSchema.omit({ id: true });

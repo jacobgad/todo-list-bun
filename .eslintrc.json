@@ -1,7 +1,7 @@
 {
-	"extends": "next/core-web-vitals",
-	"rules": {
-		"no-console": "warn",
-		"sort-imports": "warn"
-	}
+  "extends": "next/core-web-vitals",
+  "rules": {
+    "no-console": "warn",
+    "sort-imports": "warn"
+  }
 }

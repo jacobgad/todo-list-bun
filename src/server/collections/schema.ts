@@ -5,9 +5,9 @@ export type CreateCollection = z.infer<typeof createCollectionSchema>;
 export type UpdateCollection = z.infer<typeof updateCollectionSchema>;
 
 export const collectionSchema = z.object({
-	id: z.number(),
-	name: z.string().min(1),
-	userId: z.number().positive(),
+  id: z.number(),
+  name: z.string().min(1),
+  userId: z.number().positive(),
 });
 
 export const createCollectionSchema = collectionSchema.omit({ id: true });
