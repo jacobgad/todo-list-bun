@@ -8,12 +8,14 @@ export const metadata: Metadata = {
   description: "Author: Jacob Gad",
 };
 
-export default function Home() {
+type LayoutProps = {
+  children: React.ReactNode;
+};
+
+export default function Layout({ children }: LayoutProps) {
   return (
     <html lang="en">
-      <body className={inter.className}>
-        <h1>Todo list API</h1>
-      </body>
+      <body className={inter.className}>{children}</body>
     </html>
   );
 }

@@ -3,23 +3,23 @@
 Install dependencies:
 
 ```bash
-bun install
+npm install
 ```
 
 Setup database:
 
 ```zsh
-bun run db:push
+npm run db:push
 ```
 
 Run in dev mode:
 
 ```bash
-bun run dev
+npm run dev
 ```
 
 Run in Production mode:
 
 ```bash
-bun run start
+npm run start
 ```
